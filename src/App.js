@@ -5,7 +5,7 @@ import Main from './components/Main';
 function App() {
   return (
     <Router>
-      <div className="flex-grow p-4">
+      <div>
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/product-service-pricing" element={<Main />} />
