@@ -1,15 +1,17 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css';
-import CalculatePrice from './components/CalculatePrice';
+import Main from './components/Main';
 
 function App() {
   return (
-    <div>
-      <CalculatePrice />
-      <footer className="w-full bg-gray-800 text-white text-center py-4">
-        <p>Developed by <a href="https://www.linkedin.com/in/igor-santos-8383941a6/" className="text-blue-400 hover:underline">Igor Santos</a></p>
-        <p>Open Source Project - Helping others price products and services!</p>
-      </footer>
-    </div>
+    <Router>
+      <div className="flex-grow p-4">
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/product-service-pricing" element={<Main />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
