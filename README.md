@@ -48,7 +48,7 @@ This project is licensed under the MIT License. See the `LICENSE` file for more 
 
 If you have any questions or suggestions, feel free to reach out:
 
-- **Creator**: [Your Name](https://linkedin.com/in/your-profile)
+- **Creator**: [Igor Santos](https://www.linkedin.com/in/igor-santos-8383941a6/)
 
 ---
 
