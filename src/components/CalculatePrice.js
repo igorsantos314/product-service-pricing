@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { calculatePrice } from "../utils/calculateFunctions";
+import PrintLabels from "./modals/PrintLabelsModal";
+import { exportToCSV, importFromCSV } from "../utils/csv";
 
 const CalculatePrice = () => {
   const [product, setProduct] = useState({
@@ -8,12 +10,19 @@ const CalculatePrice = () => {
     purchasePrice: 0,
     taxes: 0,
     profitValue: 0,
+    price: 0.00
   });
 
   const [price, setPrice] = useState(0);
   const [products, setProducts] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [labelConfig, setLabelConfig] = useState({
+    includeCode: true,
+    includePrice: true,
+    includeName: true,
+  });
 
   useEffect(() => {
     try {
@@ -21,6 +30,7 @@ const CalculatePrice = () => {
       if (calculatedPrice < 0) {
         throw new Error("Preço negativo detectado. Verifique os valores digitados.");
       }
+
       setPrice(calculatedPrice);
     } catch (error) {
       setPrice("Erro: " + error.message);
@@ -84,74 +94,22 @@ const CalculatePrice = () => {
     setProducts([]);
   };
 
-  const exportToCSV = () => {
-    const csvRows = [
-      ["Código", "Nome", "Preço de Custo", "Impostos", "Margem de Lucro", "Preço Final"],
-      ...products.map((prod) => [
-        prod.code,
-        prod.name,
-        prod.purchasePrice,
-        prod.taxes,
-        prod.profitValue,
-        prod.price,
-      ]),
-    ];
-
-    const csvContent =
-      "data:text/csv;charset=utf-8," +
-      csvRows.map((e) => e.join(",")).join("\n");
-
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "produtos.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const openPrintLabelsModal = () => {
+    setIsModalOpen(true);
   };
 
-  const importFromCSV = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const csv = event.target.result;
-      const lines = csv.split("\n").slice(1); // Remove cabeçalhos
-      const importedProducts = lines.map((line) => {
-        const [code, name, purchasePrice, taxes, profitValue, price] = line.split(",");
-        return {
-          code,
-          name,
-          purchasePrice: parseFloat(purchasePrice),
-          taxes: parseFloat(taxes),
-          profitValue: parseFloat(profitValue),
-          price: parseFloat(price),
-        };
-      });
-      setProducts([...products, ...importedProducts]);
-    };
-    reader.readAsText(file);
-  };
-
-  const printLabels = () => {
-    const labelsContent = products
-      .map(
-        (prod) =>
-          `Produto: ${prod.name}\nPreço: R$ ${prod.price.toFixed(
-            2
-          )}\n----------------------`
-      )
-      .join("\n");
-
-    const newWindow = window.open("", "_blank");
-    newWindow.document.write(`<pre>${labelsContent}</pre>`);
-    newWindow.print();
-    newWindow.close();
+  const closePrintLabelsModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
     <div className="flex flex-col md:flex-row w-full min-h-screen p-4 bg-gray-50">
+      
+      {/* Print Labels */}
+      {
+        isModalOpen ? ( <PrintLabels products={products} onClose={closePrintLabelsModal} />) : null
+      }
+      
       {/* Calculadora */}
       <div className="w-full md:w-1/2 flex flex-col items-center p-4">
         <h1 className="text-3xl font-semibold mb-4">Calcular Preço de Produto/Serviço</h1>
@@ -251,7 +209,7 @@ const CalculatePrice = () => {
 
         <div className="flex space-x-4 mb-4">
           <button
-            onClick={exportToCSV}
+            onClick={e => exportToCSV(products)}
             className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
           >
             Exportar CSV
@@ -261,12 +219,12 @@ const CalculatePrice = () => {
             <input
               type="file"
               accept=".csv"
-              onChange={importFromCSV}
+              onChange={e => importFromCSV(e, products, setProducts)}
               className="hidden"
             />
           </label>
           <button
-            onClick={printLabels}
+            onClick={openPrintLabelsModal}
             className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600"
           >
             Imprimir Etiquetas
