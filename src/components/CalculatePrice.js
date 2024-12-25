@@ -18,11 +18,6 @@ const CalculatePrice = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [labelConfig, setLabelConfig] = useState({
-    includeCode: true,
-    includePrice: true,
-    includeName: true,
-  });
 
   useEffect(() => {
     try {
@@ -103,7 +98,7 @@ const CalculatePrice = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row w-full min-h-screen p-4 bg-gray-50">
+    <div className="flex flex-col md:flex-row w-full min-h-screen p-4">
       
       {/* Print Labels */}
       {
@@ -112,7 +107,7 @@ const CalculatePrice = () => {
       
       {/* Calculadora */}
       <div className="w-full md:w-1/2 flex flex-col items-center p-4">
-        <h1 className="text-3xl font-semibold mb-4">Calcular Preço de Produto/Serviço</h1>
+        <h1 className="text-3xl text-white font-semibold mb-4">Calcular Preço de Produto/Serviço</h1>
         <form className="bg-white p-6 rounded shadow-md w-full max-w-lg">
           <div className="space-y-4">
             <label className="block text-sm font-medium text-gray-700">Código</label>
@@ -198,7 +193,7 @@ const CalculatePrice = () => {
       {/* Lista de Produtos */}
       <div className="w-full md:w-1/2 p-4">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold">Lista de Produtos</h2>
+          <h2 className="text-2xl text-white font-semibold">Lista de Produtos</h2>
           <button
             onClick={clearProductList}
             className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"

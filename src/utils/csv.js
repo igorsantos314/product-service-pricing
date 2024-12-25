@@ -1,6 +1,6 @@
 export const exportToCSV = (products) => {
     const csvRows = [
-      ["Código", "Nome", "Preço de Custo", "Impostos", "Margem de Lucro", "Preço Final"],
+      ["Codigo", "Nome", "Preco de Custo", "Impostos", "Margem de Lucro", "Preco Final"],
       ...products.map((prod) => [
         prod.code,
         prod.name,
