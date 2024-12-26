@@ -4,5 +4,6 @@ export const calculatePrice = ({ purchasePrice, taxes, profitValue }) => {
 };
 
 export const calculateProfitMargin = (costPrice, sellPrice) => {
-  return (costPrice / sellPrice) * 100
-}
+  if (sellPrice <= 0) return 0; // Evita divisões por zero ou valores negativos
+  return ((sellPrice - costPrice) / sellPrice) * 100;
+};
