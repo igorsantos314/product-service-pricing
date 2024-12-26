@@ -3,7 +3,7 @@ import React, { useState } from "react";
 const PrintLabels = ({ products, onClose }) => {
   const [config, setConfig] = useState({
     showBorder: true,
-    borderColor: 'red',
+    borderColor: 'black',
     fontSize: 14,
     fontColor: 'black',
     includeCode: true
@@ -111,9 +111,9 @@ const PrintLabels = ({ products, onClose }) => {
         </div>
         
         {/* Exibição das labels */}
-        <div className="flex row-4" id="labels-content">
+        <div className="" id="labels-content">
           {products.map((product, index) => (
-            <div className="label" key={index}>
+            <div className="label mt-8" key={index}>
               <p><strong>{product.name}</strong></p>
               <p>R$ {typeof product.price === "string" ? product.price : `${product.price.toFixed(2)}`}</p>
               {config.includeCode && <p>Code: {product.code}</p>}
