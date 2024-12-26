@@ -116,7 +116,7 @@ const CalculatePrice = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row w-full min-h-screen p-4">
+    <div className="flex flex-col md:flex-row w-full h-full p-4">
       
       {/* Print Labels */}
       {

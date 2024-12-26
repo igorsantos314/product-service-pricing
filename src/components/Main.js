@@ -10,7 +10,7 @@ const Main = () => {
             <Navbar />
 
             {/* Main Aplication */}
-            <div className="pt-8 relative z-10 flex-grow"> {/* Padding-top para compensar a navbar fixa */}
+            <div className="pt-4 relative z-10 flex-grow"> {/* Padding-top para compensar a navbar fixa */}
                 <CalculatePrice />
             </div>
             
