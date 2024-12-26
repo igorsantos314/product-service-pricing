@@ -8,10 +8,10 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-blue-500 p-4 fixed w-full top-0 z-20">
+    <nav className="bg-blue-500 opacity-90 p-4 w-full top-0 z-20">
       <div className="flex justify-between items-center">
         {/* Logo ou Nome do App */}
-        <div className="text-white text-xl font-bold">Pricing Calculate</div>
+        <div className="text-white text-xl font-bold">Price Calculator</div>
         
         {/* Menu Hambúrguer */}
         <button onClick={toggleMenu} className="text-white lg:hidden">

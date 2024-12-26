@@ -45,10 +45,10 @@ const PrintLabels = ({ products, onClose }) => {
     printWindow.print();
 
     // Fechar a aba de impressão após o comando de impressão ser disparado
-    printWindow.close();
+    //printWindow.close();
     
     // Fechar o modal
-    onClose();
+    //onClose();
   };
 
   return (

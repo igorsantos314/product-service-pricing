@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { calculatePrice } from "../utils/calculateFunctions";
+import { calculatePrice, calculateProfitMargin } from "../utils/calculateFunctions";
 import PrintLabels from "./modals/PrintLabelsModal";
 import { exportToCSV, importFromCSV } from "../utils/csv";
 
@@ -15,26 +15,43 @@ const CalculatePrice = () => {
 
   const [price, setPrice] = useState(0);
   const [products, setProducts] = useState([]);
+  const [lastEditedField, setLastEditedField] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     try {
-      const calculatedPrice = calculatePrice(product);
-      if (calculatedPrice < 0) {
-        throw new Error("Preço negativo detectado. Verifique os valores digitados.");
-      }
+      console.log(lastEditedField)
+      console.log(price)
 
-      setPrice(calculatedPrice);
+      if (lastEditedField === "profitValue") {
+        const calculatedPrice = calculatePrice(product);
+        if (calculatedPrice < 0) {
+          throw new Error("Preço negativo detectado. Verifique os valores digitados.");
+        }
+        setPrice(calculatedPrice);
+      } else if (lastEditedField === "price") {
+        const costPrice = parseFloat(product.purchasePrice) + parseFloat(product.taxes);
+        const profitValue = calculateProfitMargin(costPrice, price);
+  
+        if (product.profitValue !== profitValue.toFixed(2)) {
+          setProduct((prev) => ({ ...prev, profitValue: profitValue }));
+        }
+      }
     } catch (error) {
       setPrice("Erro: " + error.message);
     }
-  }, [product]);
+
+  }, [product.purchasePrice, product.taxes, price, product.profitValue, lastEditedField]);  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProduct({ ...product, [name]: value });
+
+    setProduct((prev) => ({ ...prev, [name]: value }));
+    if (name === "profitValue" || name === "price") {
+      setLastEditedField(name);
+    }
   };
 
   const clearFields = () => {
@@ -42,6 +59,7 @@ const CalculatePrice = () => {
     setPrice(0);
     setIsEditing(false);
     setEditIndex(null);
+    setLastEditedField("");
   };
 
   const addProductToList = () => {
@@ -146,13 +164,28 @@ const CalculatePrice = () => {
               onChange={handleChange}
             />
 
-            <label className="block text-sm font-medium text-gray-700">Margem de Lucro</label>
+            <label className="block text-sm font-medium text-gray-700">Margem de Lucro (%)</label>
             <input
               type="number"
               name="profitValue"
               className="w-full p-2 border border-gray-300 rounded"
               value={product.profitValue}
-              onChange={handleChange}
+              onChange={(e) => {
+                setLastEditedField("profitValue");
+                handleChange(e);
+              }}
+            />
+
+            <label className="block text-sm font-medium text-gray-700">Preço de Venda (R$)</label>
+            <input
+              type="number"
+              name="price"
+              className="w-full p-2 border border-gray-300 rounded"
+              value={price}
+              onChange={(e) => {
+                setPrice(parseFloat(e.target.value));
+                setLastEditedField("price");
+              }}
             />
 
             <div className="mt-4">
