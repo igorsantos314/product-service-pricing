@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { calculatePrice, calculateProfitMargin } from "../utils/calculateFunctions";
 import PrintLabels from "./modals/PrintLabelsModal";
 import { exportToCSV, importFromCSV } from "../utils/csv";
+import ProductList from "./widgets/ProductList";
 
 const CalculatePrice = () => {
   const [product, setProduct] = useState({
@@ -19,12 +20,26 @@ const CalculatePrice = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true); // Flag para inicialização
+
+  // Carregar produtos do cache na inicialização
+  useEffect(() => {
+    const cachedProducts = localStorage.getItem("products");
+    if (cachedProducts) {
+      setProducts(JSON.parse(cachedProducts));
+    }
+    setIsInitialLoad(false); // Inicialização completa
+  }, []);
+
+  // Salvar produtos no cache sempre que forem atualizados
+  useEffect(() => {
+    if (!isInitialLoad) {
+      localStorage.setItem("products", JSON.stringify(products));
+    }
+  }, [products, isInitialLoad]);
 
   useEffect(() => {
     try {
-      console.log(lastEditedField)
-      console.log(price)
-
       if (lastEditedField === "profitValue") {
         const calculatedPrice = calculatePrice(product);
         if (calculatedPrice < 0) {
@@ -43,6 +58,7 @@ const CalculatePrice = () => {
       setPrice("Erro: " + error.message);
     }
 
+    // eslint-disable-next-line
   }, [product.purchasePrice, product.taxes, price, product.profitValue, lastEditedField]);  
 
   const handleChange = (e) => {
@@ -258,37 +274,8 @@ const CalculatePrice = () => {
             Imprimir Etiquetas
           </button>
         </div>
-
-        <ul className="bg-white rounded shadow-md p-4 space-y-2">
-          {products.length === 0 ? (
-            <p className="text-gray-600">Nenhum produto adicionado.</p>
-          ) : (
-            products.map((prod, index) => (
-              <li
-                key={index}
-                className="flex justify-between items-center border-b pb-2"
-              >
-                <div>
-                  <strong>{prod.name}</strong> - R$ {prod.price.toFixed(2)}
-                </div>
-                <div className="space-x-2">
-                  <button
-                    onClick={() => handleEdit(index)}
-                    className="text-blue-500 hover:underline"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => deleteProduct(index)}
-                    className="text-red-500 hover:underline"
-                  >
-                    Excluir
-                  </button>
-                </div>
-              </li>
-            ))
-          )}
-        </ul>
+        
+        <ProductList products={products} onDelete={deleteProduct} onEdit={handleEdit} />
       </div>
     </div>
   );
