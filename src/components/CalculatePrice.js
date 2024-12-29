@@ -11,7 +11,8 @@ const CalculatePrice = () => {
     purchasePrice: 0,
     taxes: 0,
     profitValue: 0,
-    price: 0.00
+    price: 0.00,
+    quantity: 0,
   });
 
   const [price, setPrice] = useState(0);
@@ -105,14 +106,16 @@ const CalculatePrice = () => {
     setIsEditing(true);
     setEditIndex(index);
     const prodToEdit = products[index];
+    
     setProduct({
       code: prodToEdit.code,
       name: prodToEdit.name,
       purchasePrice: prodToEdit.purchasePrice,
       taxes: prodToEdit.taxes,
       profitValue: prodToEdit.profitValue,
+      price: prodToEdit.price,
+      quantity: prodToEdit.quantity || 0,
     });
-    setPrice(prodToEdit.price);
   };
 
   const deleteProduct = (index) => {
@@ -133,7 +136,6 @@ const CalculatePrice = () => {
 
   return (
     <div className="flex flex-col md:flex-row w-full h-full p-4">
-      
       {/* Print Labels */}
       {
         isModalOpen ? ( <PrintLabels products={products} onClose={closePrintLabelsModal} />) : null
@@ -202,6 +204,15 @@ const CalculatePrice = () => {
                 setPrice(parseFloat(e.target.value));
                 setLastEditedField("price");
               }}
+            />
+
+            <label className="block text-sm font-medium text-gray-700">Quantidade em Estoque</label>
+            <input
+              type="number"
+              name="quantity"
+              className="w-full p-2 border border-gray-300 rounded"
+              value={product.quantity}
+              onChange={handleChange}
             />
 
             <div className="mt-4">

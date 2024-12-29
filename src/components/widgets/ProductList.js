@@ -33,6 +33,7 @@ const ProductList = ({ products, onEdit, onDelete }) => {
 
   return (
     <div className="bg-white rounded shadow-md p-4 space-y-4">
+      {/* Campo de busca */}
       <div className="flex justify-between items-center mb-4">
         <input
           type="text"
@@ -43,6 +44,7 @@ const ProductList = ({ products, onEdit, onDelete }) => {
         />
       </div>
 
+      {/* Tabela de produtos */}
       <div className="overflow-x-auto">
         <table className="min-w-full table-auto border-collapse border border-gray-300">
           <thead>
@@ -50,13 +52,14 @@ const ProductList = ({ products, onEdit, onDelete }) => {
               <th className="border border-gray-300 px-4 py-2">Código</th>
               <th className="border border-gray-300 px-4 py-2">Nome</th>
               <th className="border border-gray-300 px-4 py-2">Preço</th>
+              <th className="border border-gray-300 px-4 py-2">Quantidade</th>
               <th className="border border-gray-300 px-4 py-2">Ações</th>
             </tr>
           </thead>
           <tbody>
             {currentProducts.length === 0 ? (
               <tr>
-                <td colSpan="4" className="text-center text-gray-600 py-4">
+                <td colSpan="5" className="text-center text-gray-600 py-4">
                   Nenhum produto encontrado.
                 </td>
               </tr>
@@ -66,6 +69,7 @@ const ProductList = ({ products, onEdit, onDelete }) => {
                   <td className="border border-gray-300 px-4 py-2">{prod.code}</td>
                   <td className="border border-gray-300 px-4 py-2">{prod.name}</td>
                   <td className="border border-gray-300 px-4 py-2">R$ {prod.price.toFixed(2)}</td>
+                  <td className="border border-gray-300 px-4 py-2">{prod.quantity}</td>
                   <td className="border border-gray-300 px-4 py-2">
                     <button
                       onClick={() => onEdit(index + startIndex)}
@@ -87,6 +91,7 @@ const ProductList = ({ products, onEdit, onDelete }) => {
         </table>
       </div>
 
+      {/* Paginação */}
       <div className="flex justify-between items-center mt-4">
         <button
           onClick={() => handlePageChange(currentPage - 1)}

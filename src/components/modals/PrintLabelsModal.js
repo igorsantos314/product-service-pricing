@@ -43,17 +43,11 @@ const PrintLabels = ({ products, onClose }) => {
     `);
     printWindow.document.close();
     printWindow.print();
-
-    // Fechar a aba de impressão após o comando de impressão ser disparado
-    //printWindow.close();
-    
-    // Fechar o modal
-    //onClose();
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white rounded shadow-lg p-6 w-3/4 max-w-2xl">
+    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white rounded shadow-lg p-6 w-3/4 max-w-2xl z-50">
         <h2 className="text-lg font-bold mb-4">Product Labels</h2>
         
         {/* Configuração da UI */}
