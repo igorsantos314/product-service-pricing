@@ -21,9 +21,8 @@ const CalculatePrice = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isInitialLoad, setIsInitialLoad] = useState(true); // Flag para inicialização
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  // Carregar produtos do cache na inicialização
   useEffect(() => {
     const cachedProducts = localStorage.getItem("products");
     if (cachedProducts) {
@@ -32,7 +31,6 @@ const CalculatePrice = () => {
     setIsInitialLoad(false); // Inicialização completa
   }, []);
 
-  // Salvar produtos no cache sempre que forem atualizados
   useEffect(() => {
     if (!isInitialLoad) {
       localStorage.setItem("products", JSON.stringify(products));
@@ -42,16 +40,16 @@ const CalculatePrice = () => {
   useEffect(() => {
     try {
       if (lastEditedField === "profitValue") {
-        const calculatedPrice = calculatePrice(product);
+        const calculatedPrice = calculatePrice(product).toFixed(2);
         if (calculatedPrice < 0) {
           throw new Error("Preço negativo detectado. Verifique os valores digitados.");
         }
         setPrice(calculatedPrice);
       } else if (lastEditedField === "price") {
         const costPrice = parseFloat(product.purchasePrice) + parseFloat(product.taxes);
-        const profitValue = calculateProfitMargin(costPrice, price);
+        const profitValue = calculateProfitMargin(costPrice, price).toFixed(2);
   
-        if (product.profitValue !== profitValue.toFixed(2)) {
+        if (product.profitValue !== profitValue) {
           setProduct((prev) => ({ ...prev, profitValue: profitValue }));
         }
       }
@@ -118,10 +116,10 @@ const CalculatePrice = () => {
     setProduct({
       code: prodToEdit.code,
       name: prodToEdit.name,
-      purchasePrice: prodToEdit.purchasePrice,
-      taxes: prodToEdit.taxes,
-      profitValue: prodToEdit.profitValue,
-      price: prodToEdit.price,
+      purchasePrice: parseFloat(prodToEdit.purchasePrice).toFixed(2),
+      taxes: parseFloat(prodToEdit.taxes).toFixed(2),
+      profitValue: parseFloat(prodToEdit.profitValue).toFixed(2),
+      price: parseFloat(prodToEdit.price).toFixed(2),
       quantity: prodToEdit.quantity || 0,
     });
 
@@ -192,18 +190,6 @@ const CalculatePrice = () => {
               onChange={handleChange}
             />
 
-            <label className="block text-sm font-medium text-gray-700">Margem de Lucro (%)</label>
-            <input
-              type="number"
-              name="profitValue"
-              className="w-full p-2 border border-gray-300 rounded"
-              value={product.profitValue}
-              onChange={(e) => {
-                setLastEditedField("profitValue");
-                handleChange(e);
-              }}
-            />
-
             <label className="block text-sm font-medium text-gray-700">Preço de Venda (R$)</label>
             <input
               type="number"
@@ -213,6 +199,18 @@ const CalculatePrice = () => {
               onChange={(e) => {
                 setPrice(parseFloat(e.target.value));
                 setLastEditedField("price");
+              }}
+            />
+
+            <label className="block text-sm font-medium text-gray-700">Margem de Lucro (%)</label>
+            <input
+              type="number"
+              name="profitValue"
+              className="w-full p-2 border border-gray-300 rounded"
+              value={product.profitValue}
+              onChange={(e) => {
+                setLastEditedField("profitValue");
+                handleChange(e);
               }}
             />
 

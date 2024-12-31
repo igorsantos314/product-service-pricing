@@ -9,10 +9,10 @@ export const exportToCSV = (products) => {
     ...products.map((prod) => [
       prod.code,
       prod.name,
-      prod.purchasePrice,
-      prod.taxes,
-      prod.profitValue,
-      prod.price,
+      parseFloat(prod.purchasePrice).toFixed(2),
+      parseFloat(prod.taxes).toFixed(2),
+      parseFloat(prod.profitValue).toFixed(2),
+      parseFloat(prod.price).toFixed(2),
       prod.quantity,
     ]),
   ];
