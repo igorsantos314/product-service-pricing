@@ -3,20 +3,46 @@ import React, { useState } from "react";
 const ProductList = ({ products, onEdit, onDelete }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortOption, setSortOption] = useState(""); // Opção de ordenação
   const itemsPerPage = 25;
+
+  // Ordena os produtos com base na opção selecionada
+  const sortProducts = (products) => {
+    return [...products].sort((a, b) => {
+      if (sortOption === "code") {
+        return a.code.localeCompare(b.code);
+      } else if (sortOption === "name") {
+        return a.name.localeCompare(b.name);
+      } else if (sortOption === "quantity") {
+        return (b.quantity || 0) - (a.quantity || 0);
+      } else if (sortOption === "price") {
+        return b.price - a.price;
+      } else if (sortOption === "stock") {
+        return b.purchasePrice - a.purchasePrice; // Exemplo: ordenação por preço de custo
+      }
+      return 0; // Sem ordenação
+    });
+  };
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to first page on new search
+    setCurrentPage(1); // Reset para a primeira página ao realizar uma nova busca
   };
 
-  const filteredProducts = products.filter((product) => {
-    const lowerCaseTerm = searchTerm.toLowerCase();
-    return (
-      product.name.toLowerCase().includes(lowerCaseTerm) ||
-      product.code.toLowerCase().includes(lowerCaseTerm)
-    );
-  });
+  const handleSortChange = (e) => {
+    setSortOption(e.target.value);
+  };
+
+  // Filtra e ordena os produtos
+  const filteredProducts = sortProducts(
+    products.filter((product) => {
+      const lowerCaseTerm = searchTerm.toLowerCase();
+      return (
+        (product.name?.toLowerCase().includes(lowerCaseTerm) || false) ||
+        (product.code?.toLowerCase().includes(lowerCaseTerm) || false)
+      );
+    })
+  );
 
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -33,15 +59,27 @@ const ProductList = ({ products, onEdit, onDelete }) => {
 
   return (
     <div className="bg-white rounded shadow-md p-4 space-y-4">
-      {/* Campo de busca */}
+      {/* Campo de busca e dropdown de ordenação */}
       <div className="flex justify-between items-center mb-4">
         <input
           type="text"
           placeholder="Buscar por nome ou código"
           value={searchTerm}
           onChange={handleSearch}
-          className="w-full p-2 border border-gray-300 rounded"
+          className="w-3/4 p-2 border border-gray-300 rounded"
         />
+        <select
+          value={sortOption}
+          onChange={handleSortChange}
+          className="p-2 border border-gray-300 rounded"
+        >
+          <option value="">Ordenar por...</option>
+          <option value="code">Código</option>
+          <option value="name">Nome</option>
+          <option value="quantity">Quantidade</option>
+          <option value="price">Valor</option>
+          <option value="stock">Estoque</option>
+        </select>
       </div>
 
       {/* Tabela de produtos */}
@@ -66,10 +104,18 @@ const ProductList = ({ products, onEdit, onDelete }) => {
             ) : (
               currentProducts.map((prod, index) => (
                 <tr key={index} className="text-center">
-                  <td className="border border-gray-300 px-4 py-2">{prod.code}</td>
-                  <td className="border border-gray-300 px-4 py-2">{prod.name}</td>
-                  <td className="border border-gray-300 px-4 py-2">R$ {prod.price.toFixed(2)}</td>
-                  <td className="border border-gray-300 px-4 py-2">{prod.quantity}</td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    {prod.code}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    {prod.name}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    R$ {prod.price.toFixed(2)}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    {prod.quantity}
+                  </td>
                   <td className="border border-gray-300 px-4 py-2">
                     <button
                       onClick={() => onEdit(index + startIndex)}

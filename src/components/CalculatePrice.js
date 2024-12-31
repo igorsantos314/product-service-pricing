@@ -72,7 +72,15 @@ const CalculatePrice = () => {
   };
 
   const clearFields = () => {
-    setProduct({ code: "", name: "", purchasePrice: 0, taxes: 0, profitValue: 0 });
+    setProduct({
+      code: "",
+      name: "",
+      purchasePrice: 0,
+      taxes: 0,
+      profitValue: 0,
+      price: 0,
+      quantity: 0,
+    });
     setPrice(0);
     setIsEditing(false);
     setEditIndex(null);
@@ -116,6 +124,8 @@ const CalculatePrice = () => {
       price: prodToEdit.price,
       quantity: prodToEdit.quantity || 0,
     });
+
+    setPrice(prodToEdit.price);
   };
 
   const deleteProduct = (index) => {
@@ -274,7 +284,7 @@ const CalculatePrice = () => {
             <input
               type="file"
               accept=".csv"
-              onChange={e => importFromCSV(e, products, setProducts)}
+              onChange={e => importFromCSV(e, setProducts)}
               className="hidden"
             />
           </label>
