@@ -187,7 +187,7 @@ const POS = () => {
           </style>
         </head>
         <body>
-          <h1>Sistema PDV</h1>
+          <h1>Sistema Venda Fácil</h1>
           <p>${formattedDate} ${formattedTime}</p>
           <h2>Recibo de Venda</h2>
           <div class="separator"></div>
@@ -220,7 +220,7 @@ const POS = () => {
           <p class="total">Valor Pago: R$ ${amountPaid.toFixed(2)}</p>
           <p class="total">Troco: R$ ${change.toFixed(2)}</p>
           <div class="separator"></div>
-          <p class="center">Obrigado pela preferência!</p>
+          <p class="center">Obrigado pela preferência! - Venda Fácil</p>
         </body>
       </html>
     `;
