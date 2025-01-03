@@ -3,7 +3,12 @@ import React, { useState, useEffect } from "react";
 const POS = () => {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
-  const [tempCart, setTempCart] = useState([]);
+  const [tempSale, setTempSale] = useState({
+    items: [],
+    total: 0.00,
+    amountPaid: 0.00,
+    change: 0.00,
+  });
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [quantity, setQuantity] = useState(1);
@@ -75,13 +80,24 @@ const POS = () => {
   };
 
   const finalizeSale = () => {
-    setTempCart(cart);
+    if (cart.length === 0) {
+      alert("Não é possível finalizar a venda sem produtos no carrinho.");
+      return;
+    }
 
+    openModal();
+  };
+  
+  const completeSale = () => {
     const sale = {
       date: new Date().toISOString(),
       items: cart,
       total: totalPrice,
+      amountPaid: amountPaid,
+      change: change,
     };
+    
+    setTempSale(sale);
 
     // Atualiza o estoque de produtos
     const updatedProducts = products.map((product) => {
@@ -94,36 +110,45 @@ const POS = () => {
       }
       return product;
     });
-
+  
     setProducts(updatedProducts);
     localStorage.setItem("products", JSON.stringify(updatedProducts));
-
+  
     // Salva a venda no cache
     const cachedSales = localStorage.getItem("sales");
     const sales = cachedSales ? JSON.parse(cachedSales) : [];
     localStorage.setItem("sales", JSON.stringify([...sales, sale]));
-
-    // Abre o modal de recibo
+  
+    setCart([]); // Limpa o carrinho
+    setAmountPaid(0); // Reseta o valor pago
+    setChange(0); // Reseta o troco
+    
+    setIsModalOpen(false);
     setIsReceiptModalOpen(true);
-
-    // Fecha o modal de troco e reseta carrinho
-    closeModal();
   };
 
   const openModal = () => {
     setIsModalOpen(true);
+    setTimeout(() => {
+      document.getElementById("amountPaidInput")?.focus();
+    }, 0);
   };
-
+  
+  const handleAmountPaidChange = (e) => {
+    const value = parseFloat(e.target.value) || 0;
+    setAmountPaid(value);
+    const calculatedChange = value - totalPrice;
+    setChange(calculatedChange >= 0 ? calculatedChange : 0);
+  };
+  
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      completeSale();
+    }
+  };
+  
   const closeModal = () => {
     setIsModalOpen(false);
-    setCart([]);
-    setAmountPaid(0);
-    setChange(0);
-  };
-
-  const calculateChange = () => {
-    const calculatedChange = parseFloat(amountPaid) - totalPrice;
-    setChange(calculatedChange >= 0 ? calculatedChange : 0);
   };
 
   const printReceipt = () => {
@@ -151,7 +176,7 @@ const POS = () => {
             }
             h1 {
               font-size: 18px;
-              margin: 0 0 10px;
+              margin-bottom: 10px;
               text-align: left;
             }
             h2, p {
@@ -159,30 +184,33 @@ const POS = () => {
               margin: 0 0 5px;
               text-align: left;
             }
-            table {
-              width: 100%;
-              border-collapse: collapse;
+            .separator {
+              border-top: 1px dashed #000;
               margin: 10px 0;
             }
-            th, td {
+            .header, .item {
+              display: flex;
+              justify-content: space-between;
               font-size: 12px;
-              text-align: left;
-              padding: 4px 0;
+              margin-bottom: 5px;
+              flex-wrap: wrap;
             }
-            th {
+            .header span {
               font-weight: bold;
+              width: 25%;
+            }
+            .item span {
+              width: 25%;
+              word-break: break-word;
             }
             .total {
               font-weight: bold;
               font-size: 14px;
               margin-top: 10px;
+              text-align: left;
             }
             .center {
               text-align: center;
-            }
-            .separator {
-              border-top: 1px dashed #000;
-              margin: 10px 0;
             }
           </style>
         </head>
@@ -192,33 +220,31 @@ const POS = () => {
           <h2>Recibo de Venda</h2>
           <div class="separator"></div>
           
-          <table>
-            <thead>
-              <tr>
-                <th>Produto</th>
-                <th>Qtd</th>
-                <th>Subtotal</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${tempCart
-                .map(
-                  (item) => `
-                <tr>
-                  <td>${item.name}</td>
-                  <td>${item.quantity}</td>
-                  <td>R$ ${(item.price * item.quantity).toFixed(2)}</td>
-                </tr>
-              `
-                )
-                .join("")}
-            </tbody>
-          </table>
+          <div class="header">
+            <span>Produto</span>
+            <span>Qtd</span>
+            <span>Preço Unit.</span>
+            <span>Subtotal</span>
+          </div>
           <div class="separator"></div>
-          <p class="total">Subtotal: R$ ${totalPrice.toFixed(2)}</p>
-          <p class="total">Total: R$ ${totalPrice.toFixed(2)}</p>
-          <p class="total">Valor Pago: R$ ${amountPaid.toFixed(2)}</p>
-          <p class="total">Troco: R$ ${change.toFixed(2)}</p>
+          
+          ${tempSale.items
+            .map(
+              (item) => `
+              <div class="item">
+                <span>${item.name}</span>
+                <span>${item.quantity}</span>
+                <span>R$ ${item.price.toFixed(2)}</span>
+                <span>R$ ${(item.price * item.quantity).toFixed(2)}</span>
+              </div>
+            `
+            )
+            .join("")}
+          <div class="separator"></div>
+          <p class="total">Subtotal: R$ ${tempSale.total.toFixed(2)}</p>
+          <p class="total">Total: R$ ${tempSale.total.toFixed(2)}</p>
+          <p class="total">Valor Pago: R$ ${tempSale.amountPaid.toFixed(2)}</p>
+          <p class="total">Troco: R$ ${tempSale.change.toFixed(2)}</p>
           <div class="separator"></div>
           <p class="center">Obrigado pela preferência! - Venda Fácil</p>
         </body>
@@ -231,8 +257,8 @@ const POS = () => {
     receiptWindow.print();
     receiptWindow.close();
   
-    // Manter o modal aberto para decidir se a venda será finalizada
-  };
+    setIsReceiptModalOpen(false);
+  };  
 
   return (
     <div className="min-h-screen p-4 flex flex-col lg:flex-row">
@@ -327,7 +353,7 @@ const POS = () => {
           <p>Total: R$ {totalPrice.toFixed(2)}</p>
         </div>
         <button
-          onClick={openModal}
+          onClick={finalizeSale}
           className="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
           disabled={cart.length === 0}
         >
@@ -351,21 +377,18 @@ const POS = () => {
               Valor Pago pelo Cliente
             </label>
             <input
-              type="number"
-              className="w-full p-2 border border-gray-300 rounded mb-4"
-              value={amountPaid}
-              onChange={(e) => setAmountPaid(parseFloat(e.target.value) || 0)}
-            />
+                type="number"
+                id="amountPaidInput"
+                className="w-full p-2 border border-gray-300 rounded mb-4"
+                value={amountPaid}
+                onChange={handleAmountPaidChange}
+                onKeyDown={handleKeyDown}
+              />
+
             <p className="mb-4">Troco: R$ {change.toFixed(2)}</p>
             <div className="flex justify-end space-x-4">
               <button
-                onClick={calculateChange}
-                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-              >
-                Calcular Troco
-              </button>
-              <button
-                onClick={finalizeSale}
+                onClick={completeSale}
                 className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
               >
                 Finalizar Venda
