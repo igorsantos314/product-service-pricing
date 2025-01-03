@@ -1,24 +1,45 @@
-# Price Calculator for Products and Services
+# Venda Fácil (Sale Easy)
 
-Welcome to the **Price Calculator for Products and Services**, an open-source project designed to help people price their products and services easily and efficiently.
+Welcome to **Venda Fácil (Sale Easy)**, a user-friendly and efficient open-source system designed to simplify product and sales management for small and medium-sized businesses.
 
-This project is ideal for entrepreneurs, freelancers, and anyone who wants to calculate fair prices by considering costs, taxes, and profit margins.
+Whether you are a store owner, entrepreneur, or freelancer, **Venda Fácil** empowers you to streamline pricing, manage sales, and gain valuable insights into your business operations.
+
+---
 
 ## Features
 
-- **Automatic price calculation**: Enter the cost price, taxes, and profit margin, and the system calculates the final value.
-- **Product list**: Add products to the list with detailed information.
-- **Edit products**: Edit any product directly in the calculator.
-- **Import and export data in CSV**: Save or load product lists in CSV files.
-- **Print labels**: Generate labels with name and price for attachment.
-- **Clear fields and list**: Options to clear calculator fields or reset the list.
-- **Responsive interface**: Responsive design for desktop and mobile devices.
+### General:
+- **Modern Point of Sale (POS)**: Quick and intuitive sales process with receipt generation.
+- **Customizable Product Management**: Add, edit, and manage your product inventory with ease.
+- **Dynamic Reports**: Track revenue, products sold, average ticket value, and detailed sales reports.
+- **Responsive Design**: Fully functional on both desktop and mobile devices.
+
+### Specific Functionalities:
+1. **Price Calculation**:
+   - Automatically calculate selling prices based on cost, taxes, and desired profit margins.
+
+2. **Product List**:
+   - Add and edit products, manage stock levels, and track essential details.
+
+3. **Sales Reports**:
+   - View sales summaries, filter by date, and analyze data for better decision-making.
+
+4. **Data Import and Export**:
+   - Save and load data in JSON format for seamless backups and restores.
+
+5. **Label Printing**:
+   - Generate and print product labels directly from the system.
+
+6. **Settings**:
+   - Export and import the database in JSON format for complete data control.
+
+---
 
 ## How to Use
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/igorsantos314/product-service-pricing
+   git clone https://github.com/igorsantos314/sale-easy
    ```
 
 2. Install dependencies:
@@ -31,24 +52,34 @@ This project is ideal for entrepreneurs, freelancers, and anyone who wants to ca
    npm start
    ```
 
-4. Access it at [http://localhost:3000](http://localhost:3000) in your browser.
+4. Access it at http://localhost:3000 in your browser.
 
 ## Contributions
 
 This is an open-source project, and all contributions are welcome! You can:
-- Report bugs
-- Suggest improvements
-- Submit pull requests
+- Report bugs by opening issues.
+- Suggest new features to improve the system.
+- Submit pull requests with code enhancements or fixes.
 
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
-
-## Contact
-
-If you have any questions or suggestions, feel free to reach out:
-
-- **Creator**: [Igor Santos](https://www.linkedin.com/in/igor-santos-8383941a6/)
+To contribute:
+1. Fork the repository.
+2. Create a branch for your feature or fix.
+3. Submit a pull request and describe your changes.
 
 ---
 
+## License
+
+This project is licensed under the MIT License. Feel free to use, modify, and distribute the code. See the `LICENSE` file for more details.
+
+---
+
+## Contact
+
+If you have any questions, suggestions, or feedback, feel free to reach out:
+
+- **Creator**: [Igor Santos](https://www.linkedin.com/in/igor-santos-8383941a6/)
+- **GitHub Repository**: [Venda Fácil (Sale Easy)](https://github.com/igorsantos314/sale-easy)
+---
+
+Thank you for using **Venda Fácil (Sale Easy)**! We hope it simplifies your business management and enhances your productivity.
