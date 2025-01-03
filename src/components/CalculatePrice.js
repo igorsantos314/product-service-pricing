@@ -91,7 +91,7 @@ const CalculatePrice = () => {
       return;
     }
 
-    const newProduct = { ...product, price };
+    const newProduct = { ...product, price: parseFloat(price) };
     setProducts([...products, newProduct]);
     clearFields();
   };
@@ -103,7 +103,7 @@ const CalculatePrice = () => {
     }
 
     const updatedProducts = [...products];
-    updatedProducts[editIndex] = { ...product, price };
+    updatedProducts[editIndex] = { ...product, price: parseFloat(price) };
     setProducts(updatedProducts);
     clearFields();
   };
