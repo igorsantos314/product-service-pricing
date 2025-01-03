@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { calculatePrice, calculateProfitMargin } from "../utils/calculateFunctions";
 import PrintLabels from "./modals/PrintLabelsModal";
-import { exportToCSV, importFromCSV } from "../utils/csv";
 import ProductList from "./widgets/ProductList";
 
 const Products = () => {
@@ -271,21 +270,6 @@ const Products = () => {
         </div>
 
         <div className="flex space-x-4 mb-4">
-          <button
-            onClick={e => exportToCSV(products)}
-            className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
-          >
-            Exportar CSV
-          </button>
-          <label className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 cursor-pointer">
-            Importar CSV
-            <input
-              type="file"
-              accept=".csv"
-              onChange={e => importFromCSV(e, setProducts)}
-              className="hidden"
-            />
-          </label>
           <button
             onClick={openPrintLabelsModal}
             className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600"

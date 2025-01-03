@@ -67,6 +67,18 @@ const NavigationBar = () => {
               Relatórios
             </NavLink>
           </li>
+          <li>
+            <NavLink
+              to="/sale-easy/settings"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-white font-semibold border-b-2 border-white"
+                  : "text-gray-200 hover:text-white"
+              }
+            >
+              Configurações
+            </NavLink>
+          </li>
         </ul>
       </div>
     </nav>

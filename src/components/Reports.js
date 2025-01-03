@@ -9,6 +9,8 @@ const Reports = () => {
   const [totalProductsSold, setTotalProductsSold] = useState(0);
   const [averageTicket, setAverageTicket] = useState(0);
   const [totalSales, setTotalSales] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 25;
 
   // Carregar vendas do localStorage ao montar o componente
   useEffect(() => {
@@ -49,10 +51,17 @@ const Reports = () => {
 
     setFilteredSales(filtered);
     calculateMetrics(filtered);
+    setCurrentPage(1); // Resetar para a primeira página
   };
 
+  // Paginação
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentSales = filteredSales.slice(startIndex, startIndex + itemsPerPage);
+
+  const totalPages = Math.ceil(filteredSales.length / itemsPerPage);
+
   return (
-    <div className="p-4">
+    <div className="min-h-screen p-4">
       <h1 className="text-3xl font-bold mb-6">Relatórios</h1>
 
       {/* Filtros */}
@@ -115,7 +124,7 @@ const Reports = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredSales.map((sale, index) => (
+            {currentSales.map((sale, index) => (
               <tr key={index} className="text-center">
                 <td className="border border-gray-300 px-4 py-2">
                   {new Date(sale.date).toLocaleDateString()}
@@ -128,6 +137,25 @@ const Reports = () => {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Paginação */}
+      <div className="flex justify-between items-center mt-4">
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600"
+          disabled={currentPage === 1}
+        >
+          Anterior
+        </button>
+        <p>Página {currentPage} de {totalPages}</p>
+        <button
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600"
+          disabled={currentPage === totalPages}
+        >
+          Próxima
+        </button>
       </div>
     </div>
   );

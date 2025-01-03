@@ -235,7 +235,7 @@ const POS = () => {
   };
 
   return (
-    <div className="p-4 flex flex-col lg:flex-row">
+    <div className="min-h-screen p-4 flex flex-col lg:flex-row">
       {/* Área Principal */}
       <div className="flex-grow p-4">
         <h1 className="text-3xl font-bold mb-4">PDV - Ponto de Venda</h1>
