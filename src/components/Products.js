@@ -4,7 +4,7 @@ import PrintLabels from "./modals/PrintLabelsModal";
 import { exportToCSV, importFromCSV } from "../utils/csv";
 import ProductList from "./widgets/ProductList";
 
-const CalculatePrice = () => {
+const Products = () => {
   const [product, setProduct] = useState({
     code: "",
     name: "",
@@ -151,7 +151,7 @@ const CalculatePrice = () => {
       
       {/* Calculadora */}
       <div className="w-full md:w-1/2 flex flex-col items-center p-4">
-        <h1 className="text-3xl text-white font-semibold mb-4">Calcular Preço de Produto/Serviço</h1>
+        <h1 className="text-3xl text-black font-semibold mb-4">Adicionar Produto/Serviço</h1>
         <form className="bg-white p-6 rounded shadow-md w-full max-w-lg">
           <div className="space-y-4">
             <label className="block text-sm font-medium text-gray-700">Código</label>
@@ -261,7 +261,7 @@ const CalculatePrice = () => {
       {/* Lista de Produtos */}
       <div className="w-full md:w-1/2 p-4">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl text-white font-semibold">Lista de Produtos</h2>
+          <h2 className="text-2xl text-black font-semibold">Lista de Produtos</h2>
           <button
             onClick={clearProductList}
             className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
@@ -300,4 +300,4 @@ const CalculatePrice = () => {
   );
 };
 
-export default CalculatePrice;
+export default Products;

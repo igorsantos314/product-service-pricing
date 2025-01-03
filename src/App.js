@@ -1,16 +1,33 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css';
-import Main from './components/Main';
+import Home from './components/Home';
+import POS from "./components/POS";
+import NavigationBar from "./components/widgets/NavigationBar";
+import WelcomeModal from "./components/modals/WelcomeModal";
+import Footer from "./components/widgets/Footer";
+import Products from "./components/Products";
+import SalesList from "./components/SalesList";
+import Reports from "./components/Reports";
 
 function App() {
   return (
     <Router>
-      <div>
+      <WelcomeModal />
+
+      <NavigationBar />
+
+      <div className="container mx-auto p-4">
         <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="/product-service-pricing" element={<Main />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/sale-easy" element={<Home />} />
+          <Route path="/sale-easy/pos" element={<POS />} />
+          <Route path="/sale-easy/products" element={<Products />} />
+          <Route path="/sale-easy/sales" element={<SalesList />} />
+          <Route path="/sale-easy/reports" element={<Reports />} />
         </Routes>
       </div>
+
+      <Footer />
     </Router>
   );
 }
