@@ -1,17 +1,15 @@
 import { useEffect, useState } from "react";
 import ExpenseModal from "./modals/ExpenseModal";
-
 const ExpenseControl = () => {
     const [expenses, setExpenses] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingExpense, setEditingExpense] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
-    const [sortOption, setSortOption] = useState("date");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 25;
   
-    // Carregar despesas do cache na inicialização
     useEffect(() => {
       const cachedExpenses = localStorage.getItem("expenses");
       if (cachedExpenses) {
@@ -19,47 +17,48 @@ const ExpenseControl = () => {
       }
     }, []);
   
-    // Salvar despesas no cache sempre que forem atualizadas
     useEffect(() => {
       localStorage.setItem("expenses", JSON.stringify(expenses));
     }, [expenses]);
   
     const handleSaveExpense = (expense) => {
-      setExpenses([...expenses, expense]);
+      if (editingExpense) {
+        const updatedExpenses = [...expenses];
+        updatedExpenses[editingExpense.index] = expense;
+        setExpenses(updatedExpenses);
+        setEditingExpense(null);
+      } else {
+        setExpenses([...expenses, expense]);
+      }
+    };
+  
+    const handleEditExpense = (index) => {
+      setEditingExpense({ index, data: expenses[index] });
+      setIsModalOpen(true);
     };
   
     const handleDeleteExpense = (index) => {
       setExpenses(expenses.filter((_, i) => i !== index));
     };
   
-    const filteredExpenses = expenses
-      .filter((exp) => {
-        const matchesTitle = exp.title.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesDate = startDate && endDate
-          ? new Date(exp.date) >= new Date(startDate) && new Date(exp.date) <= new Date(endDate)
-          : true;
-        return matchesTitle && matchesDate;
-      })
-      .sort((a, b) => {
-        if (sortOption === "date") {
-          return new Date(a.date) - new Date(b.date);
-        } else {
-          return parseFloat(a.amount) - parseFloat(b.amount);
-        }
-      });
+    const filteredExpenses = expenses.filter((exp) => {
+      const matchesTitle = exp.title.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesDate = startDate && endDate
+        ? new Date(exp.date) >= new Date(startDate) && new Date(exp.date) <= new Date(endDate)
+        : true;
+      return matchesTitle && matchesDate;
+    });
+  
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedExpenses = filteredExpenses.slice(
+      startIndex,
+      startIndex + itemsPerPage
+    );
   
     const totalPages = Math.ceil(filteredExpenses.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const paginatedExpenses = filteredExpenses.slice(startIndex, startIndex + itemsPerPage);
-  
-    const handlePageChange = (newPage) => {
-      if (newPage > 0 && newPage <= totalPages) {
-        setCurrentPage(newPage);
-      }
-    };
   
     return (
-      <div className="min-h-screen p-4 space-y-4">
+      <div className="p-4 space-y-4">
         <h1 className="text-3xl text-white font-semibold mb-4">Controle de Despesas</h1>
   
         <div className="flex flex-wrap gap-4 items-center mb-4">
@@ -84,14 +83,6 @@ const ExpenseControl = () => {
             onChange={(e) => setEndDate(e.target.value)}
             className="p-2 border border-gray-300 rounded"
           />
-          <select
-            value={sortOption}
-            onChange={(e) => setSortOption(e.target.value)}
-            className="p-2 border border-gray-300 rounded"
-          >
-            <option value="date">Ordenar por Data</option>
-            <option value="amount">Ordenar por Valor</option>
-          </select>
           <button
             onClick={() => setIsModalOpen(true)}
             className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
@@ -124,6 +115,12 @@ const ExpenseControl = () => {
                     <td className="border border-gray-300 px-4 py-2">{exp.date}</td>
                     <td className="border border-gray-300 px-4 py-2">
                       <button
+                        onClick={() => handleEditExpense(index + startIndex)}
+                        className="text-blue-500 hover:underline mr-2"
+                      >
+                        Editar
+                      </button>
+                      <button
                         onClick={() => handleDeleteExpense(index + startIndex)}
                         className="text-red-500 hover:underline"
                       >
@@ -138,19 +135,17 @@ const ExpenseControl = () => {
   
           <div className="flex justify-between items-center mt-4">
             <button
-              onClick={() => handlePageChange(currentPage - 1)}
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600"
               disabled={currentPage === 1}
-              className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 disabled:opacity-50"
             >
               Anterior
             </button>
-            <span className="text-gray-700">
-              Página {currentPage} de {totalPages}
-            </span>
+            <span>Página {currentPage} de {totalPages}</span>
             <button
-              onClick={() => handlePageChange(currentPage + 1)}
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600"
               disabled={currentPage === totalPages}
-              className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600 disabled:opacity-50"
             >
               Próxima
             </button>
@@ -159,11 +154,16 @@ const ExpenseControl = () => {
   
         <ExpenseModal
           isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          onClose={() => {
+            setIsModalOpen(false);
+            setEditingExpense(null);
+          }}
           onSave={handleSaveExpense}
+          initialData={editingExpense?.data || null}
         />
       </div>
     );
   };
   
-export default ExpenseControl;
+export default ExpenseControl;  
+  
