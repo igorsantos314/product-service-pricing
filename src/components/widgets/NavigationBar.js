@@ -57,6 +57,18 @@ const NavigationBar = () => {
           </li>
           <li>
             <NavLink
+              to="/sale-easy/expenses"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-white font-semibold border-b-2 border-white"
+                  : "text-gray-200 hover:text-white"
+              }
+            >
+              Despesas
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
               to="/sale-easy/reports"
               className={({ isActive }) =>
                 isActive

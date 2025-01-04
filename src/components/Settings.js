@@ -6,10 +6,12 @@ const Settings = () => {
   const handleExport = () => {
     const products = JSON.parse(localStorage.getItem("products")) || [];
     const sales = JSON.parse(localStorage.getItem("sales")) || [];
+    const expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
     const database = {
       products,
       sales,
+      expenses,
     };
 
     const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(
@@ -32,9 +34,10 @@ const Settings = () => {
       try {
         const data = JSON.parse(event.target.result);
 
-        if (data.products && data.sales) {
+        if (data.products && data.sales && data.expenses) {
           localStorage.setItem("products", JSON.stringify(data.products));
           localStorage.setItem("sales", JSON.stringify(data.sales));
+          localStorage.setItem("expenses", JSON.stringify(data.expenses));
           setImportStatus("Importação bem-sucedida!");
         } else {
           throw new Error("Formato de arquivo inválido.");

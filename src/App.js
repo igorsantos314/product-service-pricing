@@ -9,6 +9,7 @@ import Products from "./components/Products";
 import SalesList from "./components/SalesList";
 import Reports from "./components/Reports";
 import Settings from "./components/Settings";
+import ExpenseControl from "./components/ExpenseControl";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/sale-easy/pos" element={<POS />} />
           <Route path="/sale-easy/products" element={<Products />} />
           <Route path="/sale-easy/sales" element={<SalesList />} />
+          <Route path="/sale-easy/expenses" element={<ExpenseControl />} />
           <Route path="/sale-easy/reports" element={<Reports />} />
           <Route path="/sale-easy/settings" element={<Settings />} />
         </Routes>
